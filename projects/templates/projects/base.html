@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}TimePortal{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 3px;
+            background: #2a8735;
+        }
+        .btn:hover {
+            background: #555;
+        }
+        .btn-logout {
+            background: #d9534f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        #user-info {
+            margin-top: 0.2rem;
+            
+        }
+        #user-info span {
+            margin-right: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1><a href="{% url 'project_list' %}">TimePortal</a></h1>
+                {% if user.is_authenticated %}
+                <div>
+                    <a href="{% url 'project_list' %}" class="btn">Active Projects</a>
+                    <a href="{% url 'project_archive' %}" class="btn">Archive</a>
+                    <a href="{% url 'user_hours_overview' %}" class="btn">My Hours</a>
+                    <a href="{% url 'logout' %}" class="btn btn-logout">Sign Out</a>
+                    <br>
+                    <div id="user-info">
+                        <span>Logged in as:</span>
+                        <span>{{ user.username }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <script>
+        // Auto logout after 30 minutes of inactivity
+        let inactivityTime = function() {
+            let time;
+            const resetTimer = function() {
+                clearTimeout(time);
+                time = setTimeout(logout, 30 * 60 * 1000); // 30 minutes
+            };
+            
+            const logout = function() {
+                window.location.href = "{% url 'logout' %}";
+            };
+            
+            // DOM Events
+            window.onload = resetTimer;
+            document.onmousemove = resetTimer;
+            document.onkeypress = resetTimer;
+            document.onscroll = resetTimer;
+            document.onclick = resetTimer;
+        };
+        
+        // Initialize the inactivity timer
+        inactivityTime();
+    </script>
+    {% endif %}
+</body>
+</html>

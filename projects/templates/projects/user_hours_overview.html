@@ -1,0 +1,90 @@
+{% extends 'projects/base.html' %}
+{% load tz %}
+
+{% block title %}Hours Overview - TimePortal{% endblock %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    
+    <div class="filter-controls" style="margin-bottom: 20px;">
+        <form method="get" action="{% url 'user_hours_overview' %}">
+            <div style="margin-bottom: 10px;">
+                <a href="{% url 'user_hours_overview' %}?filter=day" class="btn {% if filter_type == 'day' %}active{% endif %}">Today</a>
+                <a href="{% url 'user_hours_overview' %}?filter=week" class="btn {% if filter_type == 'week' %}active{% endif %}">This Week</a>
+                <a href="{% url 'user_hours_overview' %}?filter=month" class="btn {% if filter_type == 'month' %}active{% endif %}">This Month</a>
+                <a href="{% url 'user_hours_overview' %}?filter=year" class="btn {% if filter_type == 'year' %}active{% endif %}">This Year</a>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <label for="start_date">Custom Range:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                <label for="end_date">to</label>
+                <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                <input type="hidden" name="filter" value="custom">
+                <button type="submit" class="btn">Apply</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="summary" style="margin-bottom: 20px;">
+        <h3>Summary</h3>
+        <p><strong>Total Hours:</strong> {{ total_hours }}</p>
+    </div>
+    
+    <div class="projects-summary" style="margin-bottom: 20px;">
+        <h3>Hours by Project</h3>
+        {% if projects_data %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects_data %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.hours }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hours recorded for this period.</p>
+        {% endif %}
+    </div>
+    
+    <div class="time-entries">
+        <h3>Time Entries</h3>
+        {% if entries %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Project</th>
+                        <th>Hours</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.project.name }}</td>
+                        <td>{{ entry.hours }}</td>
+                        <td>{{ entry.description }}</td>
+                        <td>
+                            <a href="{% url 'edit_time_entry' entry.id %}" class="btn">Edit</a>
+                            <a href="{% url 'delete_time_entry' entry.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No time entries recorded for this period.</p>
+        {% endif %}
+    </div>
+{% endblock %}

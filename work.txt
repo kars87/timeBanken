@@ -1,0 +1,17 @@
+- users need a back to main page button
+- users need to be able to edit customers on existing projects
+- users need to be able to edit time entries
+- users need to be able to edit materials
+- users need to be able to delete time entries
+- users need to be able to delete materials
+- users need to be able to delete projects
+- users need to be able to view all customers
+
+- when choosing customer, prefill hour rate if it exist in customer info, else use default
+- hours needs only one decimal place
+- cost needs only tow decimal places
+- when user is finish with project there needs to a button for project finished which sets projects as "finished" in admin panel
+- I want the log in page to be named "TimePortal"
+- I want all pages to be styled as www.nordomatic.com
+
+

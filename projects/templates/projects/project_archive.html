@@ -1,0 +1,40 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Archived Projects - Time Tracker{% endblock %}
+
+{% block content %}
+    <h2>Archived Projects</h2>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'project_list' %}" class="btn">Back to Active Projects</a>
+    </div>
+    
+    {% if projects %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Customer</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td><a href="{% url 'project_detail' project.id %}">{{ project.name }}</a></td>
+                    <td>{{ project.customer.name|default:"Spot Service" }}</td>
+                    <td>{{ project.start_date }}</td>
+                    <td>{{ project.end_date }}</td>
+                    <td>
+                        <a href="{% url 'project_detail' project.id %}" class="btn">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No archived projects found.</p>
+    {% endif %}
+{% endblock %}

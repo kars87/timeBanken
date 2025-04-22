@@ -1,0 +1,34 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Customers - Time Tracker{% endblock %}
+
+{% block content %}
+    <h2>Customers</h2>
+    
+    {% if customers %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Default Hour Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.contact_person|default:"-" }}</td>
+                    <td>{{ customer.email|default:"-" }}</td>
+                    <td>{{ customer.phone|default:"-" }}</td>
+                    <td>{{ customer.default_hour_rate }} kr</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No customers available.</p>
+    {% endif %}
+{% endblock %}

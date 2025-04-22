@@ -1,0 +1,44 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Projects - Time Tracker{% endblock %}
+
+{% block content %}
+    <h2>Projects</h2>
+    
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'create_project' %}" class="btn">Create New Project</a>
+    </div>
+    
+    {% if projects %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Customer</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Hour Rate</th>
+                    <th>Total Hours</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+                <tr>
+                    <td>{{ project.name }}</td>
+                    <td>{% if project.is_spot_service %}Spot Service{% else %}{{ project.customer|default:"-" }}{% endif %}</td>
+                    <td>{{ project.start_date }}</td>
+                    <td>{{ project.end_date|default:"-" }}</td>
+                    <td>{{ project.hour_rate }} kr</td>
+                    <td>{{ project.total_hours }}</td>
+                    <td>
+                        <a href="{% url 'project_detail' project.id %}" class="btn">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No projects available.</p>
+    {% endif %}
+{% endblock %}

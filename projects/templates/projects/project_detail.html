@@ -1,0 +1,105 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}{{ project.name }} - Time Tracker{% endblock %}
+
+{% block content %}
+    <h2>{{ project.name }}</h2>
+    <p>{{ project.description }}</p>
+    
+    <div>
+        <strong>Start Date:</strong> {{ project.start_date }}<br>
+        <strong>End Date:</strong> {{ project.end_date|default:"Ongoing" }}<br>
+        <strong>Customer:</strong> {% if project.is_spot_service %}Spot Service{% else %}{{ project.customer|default:"-" }}{% endif %}<br>
+        <strong>Hour Rate:</strong> {{ project.hour_rate }} kr<br>
+        <strong>Total Hours:</strong> {{ project.total_hours }}<br>
+        <strong>Total Labor Cost:</strong> {{ project.total_labor_cost }} kr<br>
+        <strong>Total Material Cost:</strong> {{ project.total_material_cost }} kr<br>
+        <strong>Total Project Cost:</strong> {{ project.total_cost }} kr
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <a href="{% url 'add_time_entry' project.id %}" class="btn">Add Time Entry</a>
+        <a href="{% url 'add_material' project.id %}" class="btn">Add Material</a>
+        <a href="{% url 'edit_project' project.id %}" class="btn">Edit Project</a>
+        <a href="{% url 'delete_project' project.id %}" class="btn btn-danger">Delete Project</a>
+        
+        {% if not project.is_finished %}
+        <form method="post" action="{% url 'mark_project_finished' project.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn">Mark as Finished</button>
+        </form>
+        {% else %}
+        <span class="badge">Finished{% if project.end_date %} on {{ project.end_date }}{% endif %}</span>
+        <form method="post" action="{% url 'mark_project_active' project.id %}" style="display: inline; margin-left: 10px;">
+            {% csrf_token %}
+            <button type="submit" class="btn">Reactivate Project</button>
+        </form>
+        {% endif %}
+    </div>
+    
+    <h3>Time Entries</h3>
+    {% if entries %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Hours</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.date }}</td>
+                    <td>{{ entry.user.username }}</td>
+                    <td>{{ entry.hours }}</td>
+                    <td>{{ entry.description }}</td>
+                    <td>
+                        {% if entry.user == request.user %}
+                        <a href="{% url 'edit_time_entry' entry.id %}" class="btn">Edit</a>
+                        <a href="{% url 'delete_time_entry' entry.id %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No time entries recorded yet.</p>
+    {% endif %}
+    
+    <h3>Materials</h3>
+    {% if materials %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                    <th>Cost</th>
+                    <th>Date Added</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for material in materials %}
+                <tr>
+                    <td>{{ material.name }}</td>
+                    <td>{{ material.quantity }}</td>
+                    <td>{{ material.cost }} kr</td>
+                    <td>{{ material.date_added }}</td>
+                    <td>{{ material.description }}</td>
+                    <td>
+                        <a href="{% url 'edit_material' material.id %}" class="btn">Edit</a>
+                        <a href="{% url 'delete_material' material.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No materials recorded yet.</p>
+    {% endif %}
+{% endblock %}

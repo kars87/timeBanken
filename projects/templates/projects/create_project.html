@@ -1,0 +1,107 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Create New Project{% endblock %}
+
+{% block content %}
+    <h2>Create New Project</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.name.id_for_label }}">Project Name:</label>
+            {{ form.name }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {{ form.description }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+            {{ form.start_date }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.end_date.id_for_label }}">End Date (optional):</label>
+            {{ form.end_date }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.is_spot_service.id_for_label }}">{{ form.is_spot_service.label }}:</label>
+            {{ form.is_spot_service }}
+        </div>
+        
+        <div id="customer-field" style="margin-bottom: 15px;">
+            <label for="{{ form.customer.id_for_label }}">Customer:</label>
+            {{ form.customer }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.hour_rate.id_for_label }}">Hour Rate (kr):</label>
+            {{ form.hour_rate }}
+        </div>
+        
+        <button type="submit" class="btn">Create Project</button>
+        <a href="{% url 'project_list' %}" style="margin-left: 10px;">Cancel</a>
+    </form>
+    
+    <script>
+        // Show/hide customer field based on spot service checkbox
+        document.addEventListener('DOMContentLoaded', function() {
+            //const spotServiceCheckbox = document.getElementById('{{ form.is_spot_service.id_for_label }}');
+            const spotServiceCheckbox = document.getElementById('id_is_spot_service');
+            const customerField = document.getElementById('customer-field');
+            const customerSelect = document.getElementById('id_customer');
+            const hourRateInput = document.getElementById('id_hour_rate');
+            //const customerSelect = document.getElementById('{{ form.customer.id_for_label }}');
+            //const hourRateInput = document.getElementById('{{ form.hour_rate.id_for_label }}');
+            
+            // Customer default hour rates (populated from Django)
+            const customerRates = {};
+            {% for customer in form.customer.field.queryset %}
+                {% if customer.default_hour_rate is not None %}
+                    customerRates["{{ customer.id }}"] = "{{ customer.default_hour_rate }}";
+                {% endif %}
+            {% endfor %}
+            
+            console.log("Customer rates:", customerRates);
+            
+            function toggleCustomerField() {
+                if (spotServiceCheckbox.checked) {
+                    customerField.style.display = 'none';
+                    // Set default hour rate for spot services
+                    hourRateInput.value = '2000';
+                } else {
+                    customerField.style.display = 'block';
+                    // Update hour rate based on selected customer
+                    updateHourRate();
+                }
+            }
+            
+            function updateHourRate() {
+                const selectedCustomerId = customerSelect.value;
+                console.log("Selected customer ID:", selectedCustomerId);
+                console.log("Available rate:", customerRates[selectedCustomerId]);
+                
+                if (selectedCustomerId && customerRates[selectedCustomerId]) {
+                    hourRateInput.value = customerRates[selectedCustomerId];
+                    console.log("Setting hour rate to:", customerRates[selectedCustomerId]);
+                }
+            }
+            
+            // Initial state
+            toggleCustomerField();
+            
+            // Listen for changes
+            spotServiceCheckbox.addEventListener('change', toggleCustomerField);
+            customerSelect.addEventListener('change', updateHourRate);
+            
+            // Trigger updateHourRate on initial load if a customer is selected
+            if (customerSelect.value && !spotServiceCheckbox.checked) {
+                updateHourRate();
+            }
+        });
+    </script>
+{% endblock %}

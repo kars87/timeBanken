@@ -1,0 +1,38 @@
+{% extends 'projects/base.html' %}
+
+{% block title %}Add Material - {{ project.name }}{% endblock %}
+
+{% block content %}
+    <h2>Add Material for {{ project.name }}</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.name.id_for_label }}">Name:</label>
+            {{ form.name }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+            {{ form.quantity }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.cost.id_for_label }}">Cost:</label>
+            {{ form.cost }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.date_added.id_for_label }}">Date Added:</label>
+            {{ form.date_added }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {{ form.description }}
+        </div>
+        
+        <button type="submit" class="btn">Save Material</button>
+        <a href="{% url 'project_detail' project.id %}" style="margin-left: 10px;">Cancel</a>
+    </form>
+{% endblock %}
