@@ -1,0 +1,22 @@
+# Core dependencies
+Django>=4.2.20
+python-dateutil>=2.8.2
+
+# Database adapters
+# Uncomment the one you need
+# psycopg2>=2.9.5  # For PostgreSQL
+# mysqlclient>=2.1.1  # For MySQL
+
+# Development tools
+django-debug-toolbar>=3.8.0
+
+# Deployment dependencies
+gunicorn>=20.1.0
+whitenoise>=6.4.0
+
+# Testing
+pytest>=7.3.1
+pytest-django>=4.5.2
+
+# Security
+django-axes>=5.40.1  # Optional: for login attempt tracking
