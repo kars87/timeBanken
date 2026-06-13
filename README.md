@@ -1,4 +1,4 @@
-# TimePortal
+# TimePortal - NOT FINISHED
 
 TimePortal is a time tracking and project management application built with Django. It allows users to track time spent on projects, manage materials, and generate reports.
 
